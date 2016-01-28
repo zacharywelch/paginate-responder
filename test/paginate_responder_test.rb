@@ -113,7 +113,7 @@ class PaginateResponderTest < ActionController::TestCase
     assert_equal ('AA'..'zz').to_a[10..19], json
   end
 
-  def test_headers_links
+  def test_headers
     get :index, format: :json
 
     assert_equal 3, response.links.size
@@ -128,7 +128,7 @@ class PaginateResponderTest < ActionController::TestCase
     assert_equal 'http://test.host/index.json?page=14', response.links[2][:url]
   end
 
-  def test_headers_links_page_2
+  def test_headers_page_2
     get :index, format: :json, page: 2
 
     assert_equal 4, response.links.size
@@ -146,7 +146,7 @@ class PaginateResponderTest < ActionController::TestCase
     assert_equal 'http://test.host/index.json?page=14', response.links[3][:url]
   end
 
-  def test_headers_links_page_5
+  def test_headers_page_5
     get :index, format: :json, page: 5
 
     assert_equal 4, response.links.size
@@ -164,7 +164,7 @@ class PaginateResponderTest < ActionController::TestCase
     assert_equal 'http://test.host/index.json?page=14', response.links[3][:url]
   end
 
-  def test_headers_links_last_page
+  def test_headers_last_page
     get :index, format: :json, page: 14
 
     assert_equal 3, response.links.size
@@ -179,7 +179,7 @@ class PaginateResponderTest < ActionController::TestCase
     assert_equal 'http://test.host/index.json?page=14', response.links[2][:url]
   end
 
-  def test_headers_links_page_before_last_page
+  def test_headers_page_before_last_page
     get :index, format: :json, page: 13
 
     assert_equal 4, response.links.size
@@ -197,7 +197,7 @@ class PaginateResponderTest < ActionController::TestCase
     assert_equal 'http://test.host/index.json?page=14', response.links[3][:url]
   end
 
-  def test_headers_links_per_page
+  def test_headers_per_page
     get :index, format: :json, page: 1, per_page: 10
 
     assert_equal 3, response.links.size
@@ -212,21 +212,27 @@ class PaginateResponderTest < ActionController::TestCase
     assert_equal 'http://test.host/index.json?page=68&per_page=10', response.links[2][:url]
   end
 
-  def test_headers_total_pages
+  def test_custom_headers_total_pages
     get :index, format: :json
 
     assert_equal '14', response.headers['X-Total-Pages']
   end
 
-  def test_headers_total_count
+  def test_custom_headers_total_count
     get :index, format: :json
 
     assert_equal '676', response.headers['X-Total-Count']
   end
 
-  def test_headers_per_page
+  def test_custom_headers_per_page
     get :index, format: :json
 
     assert_equal '50', response.headers['X-Per-Page']
+  end
+
+  def test_custom_headers_page
+    get :index, format: :json
+
+    assert_equal '1', response.headers['X-Page']
   end
 end

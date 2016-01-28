@@ -43,6 +43,7 @@ module PaginateResponder
       response.headers["X-Total-Pages"] = total_pages.to_s if total_pages
       response.headers["X-Total-Count"] = total_count.to_s if total_count
       response.headers["X-Per-Page"]    = per_page.to_s
+      response.headers["X-Page"]        = page.to_s
     end
 
     def link!(rel, page)
