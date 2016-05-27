@@ -8,20 +8,27 @@ module PaginateResponder::Adapter
       resource.respond_to?(:paginate)
     end
 
-    def paginate(opts)
-      resource.paginate :page => opts[:page], :per_page => opts[:per_page]
+    def paginated?
+      resource.respond_to?(:limit_value) &&
+      resource.respond_to?(:offset_value) &&
+      resource.respond_to?(:total_entries) &&
+      resource.respond_to?(:total_pages)
     end
 
-    def defaults
-      { :per_page => 50, :max_per_page => 50 }
+    def page
+      (resource.offset_value / resource.limit_value).round + 1
+    end
+
+    def per_page
+      resource.limit_value
     end
 
     def total_pages
-      resource.total_pages if resource.respond_to? :total_pages
+      resource.total_pages
     end
 
     def total_count
-      resource.total_entries if resource.respond_to? :total_entries
+      resource.total_entries
     end
   end
 

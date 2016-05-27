@@ -1,8 +1,7 @@
 require 'test_helper.rb'
 
-GEM = ENV['GEM'].to_s.split ','
-GEM = ['will_paginate'] if GEM.empty?
-puts "[INFO] Running tests with #{GEM.join(' and ')}."
+GEM = ENV['GEM'] || 'will_paginate'
+puts "[INFO] Running tests with #{GEM}."
 
 class PaginateResponderTest < ActionController::TestCase
   tests PaginateController
@@ -11,24 +10,23 @@ class PaginateResponderTest < ActionController::TestCase
     ('AA'..'zz').to_a
   end
 
-  GEM.each do |gem|
-    case gem
-    when 'will_paginate'
-      require 'will_paginate/array'
-      require 'will_paginate/active_record'
-    when 'kaminari'
-      require 'kaminari'
-      require 'kaminari/models/array_extension'
-      Kaminari::Hooks.init
+  case GEM
+  when 'will_paginate'
+    require 'will_paginate/array'
+    require 'will_paginate/active_record'
+    WillPaginate.per_page = 50
+  when 'kaminari'
+    require 'kaminari'
+    require 'kaminari/models/array_extension'
+    Kaminari::Hooks.init
 
-      Kaminari.configure do |config|
-        config.default_per_page = 50
-        config.max_per_page = 50
-      end
+    Kaminari.configure do |config|
+      config.default_per_page = 50
+      config.max_per_page = 50
+    end
 
-      def array_resource
-        Kaminari.paginate_array ('AA'..'zz').to_a
-      end
+    def array_resource
+      Kaminari.paginate_array ('AA'..'zz').to_a
     end
   end
 

@@ -77,6 +77,11 @@ class PaginateController < ActionController::Base
   respond_to :json
 
   def index
-    respond_with resource
+    case GEM
+    when 'will_paginate'
+      respond_with resource.paginate(page: params[:page], per_page: params[:per_page])
+    when 'kaminari'
+      respond_with resource.page(params[:page]).per(params[:per_page])
+    end
   end
 end
