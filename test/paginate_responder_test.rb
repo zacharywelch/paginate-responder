@@ -1,8 +1,7 @@
 require 'test_helper.rb'
 
-GEM = ENV['GEM'].to_s.split ','
-GEM = ['will_paginate'] if GEM.empty?
-puts "[INFO] Running tests with #{GEM.join(' and ')}."
+GEM = ENV['GEM'] || 'will_paginate'
+puts "[INFO] Running tests with #{GEM}."
 
 class PaginateResponderTest < ActionController::TestCase
   tests PaginateController
@@ -11,24 +10,23 @@ class PaginateResponderTest < ActionController::TestCase
     ('AA'..'zz').to_a
   end
 
-  GEM.each do |gem|
-    case gem
-    when 'will_paginate'
-      require 'will_paginate/array'
-      require 'will_paginate/active_record'
-    when 'kaminari'
-      require 'kaminari'
-      require 'kaminari/models/array_extension'
-      Kaminari::Hooks.init
+  case GEM
+  when 'will_paginate'
+    require 'will_paginate/array'
+    require 'will_paginate/active_record'
+    WillPaginate.per_page = 50
+  when 'kaminari'
+    require 'kaminari'
+    require 'kaminari/models/array_extension'
+    Kaminari::Hooks.init
 
-      Kaminari.configure do |config|
-        config.default_per_page = 50
-        config.max_per_page = 50
-      end
+    Kaminari.configure do |config|
+      config.default_per_page = 50
+      config.max_per_page = 50
+    end
 
-      def array_resource
-        Kaminari.paginate_array ('AA'..'zz').to_a
-      end
+    def array_resource
+      Kaminari.paginate_array ('AA'..'zz').to_a
     end
   end
 
@@ -212,15 +210,27 @@ class PaginateResponderTest < ActionController::TestCase
     assert_equal 'http://test.host/index.json?page=68&per_page=10', response.links[2][:url]
   end
 
-  def test_headers_total_pages
+  def test_custom_headers_total_pages
     get :index, format: :json
 
     assert_equal '14', response.headers['X-Total-Pages']
   end
 
-  def test_headers_total_count
+  def test_custom_headers_total_count
     get :index, format: :json
 
     assert_equal '676', response.headers['X-Total-Count']
+  end
+
+  def test_custom_headers_per_page
+    get :index, format: :json
+
+    assert_equal '50', response.headers['X-Per-Page']
+  end
+
+  def test_custom_headers_page
+    get :index, format: :json
+
+    assert_equal '1', response.headers['X-Page']
   end
 end

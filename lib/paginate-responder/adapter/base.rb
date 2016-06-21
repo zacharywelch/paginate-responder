@@ -6,22 +6,27 @@ module PaginateResponder::Adapter
       @resource = resource
     end
 
-    def paginate!(opts)
-      @resource = paginate(opts)
-    end
-
     # If pagination for current resource is supported.
     #
     def suitable?
       false
     end
 
-    # Return paginated resource.
-    # Option hash will contain at least <tt>:per_page</tt>
-    # and <tt>:page</tt>.
+    # If current resource is paginated.
+    def paginated?
+      false
+    end
+
+    # Return number of current page.
     #
-    def paginate(opts)
-      resource
+    def page
+      nil
+    end
+
+    # Return value for items per page.
+    #
+    def per_page
+      nil
     end
 
     # Return number of total pages for current resource.
@@ -34,13 +39,6 @@ module PaginateResponder::Adapter
     #
     def total_count
       nil
-    end
-
-    # Return default values for items per page and maximum
-    # items per page.
-    #
-    def defaults
-      { :per_page => 50, :max_per_page => 100 }
     end
   end
 end
