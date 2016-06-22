@@ -12,7 +12,7 @@ module PaginateResponder::Adapter
       resource.respond_to?(:limit_value) &&
       resource.respond_to?(:offset_value) &&
       resource.respond_to?(:total_count) &&
-      resource.respond_to?(:num_pages)
+      resource.respond_to?(:total_pages)
     end
 
     def page
@@ -24,7 +24,7 @@ module PaginateResponder::Adapter
     end
 
     def total_pages
-      resource.num_pages
+      resource.total_pages
     end
 
     def total_count
